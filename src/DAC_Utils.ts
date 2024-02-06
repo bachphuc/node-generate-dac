@@ -1,6 +1,6 @@
 import dayjs from "dayjs";
 import { SheetData, json_read_all_sheets_from_excel} from "./utils/excel-utils";
-import { str_className } from "./utils/str-utils";
+import { str_className, str_plural } from "./utils/str-utils";
 import { ColumnSchema } from "./interface";
 import { __parent_dir, dir_create, file_exists, get_filename_without_extension, str_to_file, text_from_file } from "./utils/file_utils";
 import { IFile } from "./utils/UtilsInterface";
@@ -450,12 +450,14 @@ export function dac_generate_structure(tableName: string, schemas: ColumnSchema[
   }
 
   const className = tableName.replace(/[_ ]+/g, '');
-  // hardcord
-  // const classNames = 'RPM_Reservation_Statuses';
+  const classNamePlural = str_plural(className);
+  const tableNamePlural = str_plural(tableName);
+  const tableNameLower = tableName.toLowerCase();
 
   const classStr = binding_template(classItemTemplate, {
     table_name: tableName,
-    table_name_lower: tableName.toLowerCase(),
+    table_name_plural: tableNamePlural,
+    table_name_lower: tableNameLower,
     class_name: className,
     properties: strProperties,
     datetime: CREATED_DATETIME,
@@ -467,7 +469,8 @@ export function dac_generate_structure(tableName: string, schemas: ColumnSchema[
 
   const content = binding_template(DataAccess_Structure_Template, {
     table_name: tableName,
-    table_name_lower: tableName.toLowerCase(),
+    table_name_plural: tableNamePlural,
+    table_name_lower: tableNameLower,
     class_name: className,
     datetime: CREATED_DATETIME,
     content: classStr,
