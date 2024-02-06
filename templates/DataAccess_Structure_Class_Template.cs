@@ -1,4 +1,4 @@
-  public class {table_name}s
+  public class {table_name_plural}
 	{
 		public {table_name}[] Collection { get; set; }
 	}

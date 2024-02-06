@@ -143,6 +143,8 @@ export function dac_generate_data_access(tableName: string, schemas: ColumnSchem
     columnEnumStr+= ",\n\t\t\t" + createUserStr;
   }
 
+  const tableNamePlural = str_plural(tableName);
+
   const insertParamsStart = schemas.filter(e => 
     e.col_name !== 'ID'
     && e.col_name !== 'Create_DateTime'
@@ -150,9 +152,9 @@ export function dac_generate_data_access(tableName: string, schemas: ColumnSchem
   ).map((e, i) => {
     const types = get_SqlDbType(e.type);
     if(types.type === 'DateTime'){
-      return `CreateParameter(dbCommand, "@${e.col_name}", SqlDbType.${types.type}, FixDBDateTime(obj${tableName}s.Collection[i].${e.col_name}));`;
+      return `CreateParameter(dbCommand, "@${e.col_name}", SqlDbType.${types.type}, FixDBDateTime(obj${tableNamePlural}.Collection[i].${e.col_name}));`;
     }
-    return `CreateParameter(dbCommand, "@${e.col_name}", SqlDbType.${types.type}, obj${tableName}s.Collection[i].${e.col_name});`;
+    return `CreateParameter(dbCommand, "@${e.col_name}", SqlDbType.${types.type}, obj${tableNamePlural}.Collection[i].${e.col_name});`;
   }).join("\n" + repeat("\t", 5));
 
   const updateParamsStart = schemas.filter(e => 
@@ -162,10 +164,10 @@ export function dac_generate_data_access(tableName: string, schemas: ColumnSchem
   ).map((e, i) => {
     const types = get_SqlDbType(e.type);
     if(types.type === 'DateTime'){
-      return `CreateParameter(dbCommand, "@${e.col_name}", SqlDbType.${types.type}, FixDBDateTime(obj${tableName}s.Collection[i].${e.col_name}));`;
+      return `CreateParameter(dbCommand, "@${e.col_name}", SqlDbType.${types.type}, FixDBDateTime(obj${tableNamePlural}.Collection[i].${e.col_name}));`;
     }
     
-    return `CreateParameter(dbCommand, "@${e.col_name}", SqlDbType.${types.type}, obj${tableName}s.Collection[i].${e.col_name});`;
+    return `CreateParameter(dbCommand, "@${e.col_name}", SqlDbType.${types.type}, obj${tableNamePlural}.Collection[i].${e.col_name});`;
   }).join("\n" + repeat("\t", 5));
 
   const fillStr = schemas.map((e, i) => {
@@ -183,9 +185,10 @@ export function dac_generate_data_access(tableName: string, schemas: ColumnSchem
   if(updateColumn){
     updateField = `obj${tableName}.UpdatedByUser = ReadUserAccount(objDataReader, (int)${tableName}Column.Update_User_Account_ID, (int)${tableName}Column.UpdatedByLogonName, (int)${tableName}Column.UpdatedByFirstName, (int)${tableName}Column.UpdatedByLastName);`
   }
-
+  
   const dacTemplateGeneratedContentOutput = binding_template(dacTemplateGeneratedContent, {
     Table_Name: tableName,
+    Table_Name_Plural: tableNamePlural,
     table_name_lower: tableName.toLowerCase(),
     table_column_enum: columnEnumStr,
     insert_params: insertParamsStart,
@@ -325,11 +328,14 @@ export function dac_generate_dataServiceObject(tableName: string, schemas: Colum
   }
 
   const className = get_className(tableName);
+  const tableNameLower = tableName.toLowerCase();
+  const classNamePlural = str_plural(className);
 
   const classStr = binding_template(classTemplate, {
     table_name: tableName,
-    table_name_lower: tableName.toLowerCase(),
+    table_name_lower: tableNameLower,
     class_name: className,
+    class_name_plural: classNamePlural,
     properties: strProperties,
     created_by_user: created_by_user,
     updated_by_user: updated_by_user,
@@ -340,8 +346,9 @@ export function dac_generate_dataServiceObject(tableName: string, schemas: Colum
 
   const content = binding_template(DataServiceObjects_Template, {
     table_name: tableName,
-    table_name_lower: tableName.toLowerCase(),
+    table_name_lower: tableNameLower,
     class_name: className,
+    class_name_plural: classNamePlural,
     datetime: CREATED_DATETIME,
     content: classStr
   });

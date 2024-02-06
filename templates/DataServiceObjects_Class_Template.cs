@@ -1,5 +1,5 @@
   [Serializable]
-	public class {class_name}s
+	public class {class_name_plural}
 	{
 		public {class_name}[] Collection;
 	}

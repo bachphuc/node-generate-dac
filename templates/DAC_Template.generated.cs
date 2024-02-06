@@ -36,11 +36,11 @@ namespace XHS.DataAccess
 
 		}
  
-		public int Insert({Table_Name}s obj{Table_Name}s)
+		public int Insert({Table_Name_Plural} obj{Table_Name_Plural})
 		{
 			int intRowsAffected = 0;
 
-			if (obj{Table_Name}s.Collection.Length == 0)
+			if (obj{Table_Name_Plural}.Collection.Length == 0)
 				return 0;
 
 			SqlTransaction dbTransaction = objDBConnection.BeginTransaction();
@@ -55,7 +55,7 @@ namespace XHS.DataAccess
 				dbCommand.CommandText = "xhs_sp_ins_{table_name_lower}";
 				dbCommand.Transaction = dbTransaction;
 
-				for (int i = 0; i < obj{Table_Name}s.Collection.Length; i++)
+				for (int i = 0; i < obj{Table_Name_Plural}.Collection.Length; i++)
 				{
 					dbCommand.Parameters.Clear();
 
@@ -65,7 +65,7 @@ namespace XHS.DataAccess
 
 					intRowsAffected += dbCommand.ExecuteNonQuery();
 
-					obj{Table_Name}s.Collection[i].ID = Convert.ToInt32(dpIdentity.Value.ToString());
+					obj{Table_Name_Plural}.Collection[i].ID = Convert.ToInt32(dpIdentity.Value.ToString());
 				}
 
 				dbTransaction.Commit();
@@ -79,11 +79,11 @@ namespace XHS.DataAccess
 			}
 		}
         
-	  public int Update({Table_Name}s obj{Table_Name}s)
+	  public int Update({Table_Name_Plural} obj{Table_Name_Plural})
 		{
 			int intRowsAffected = 0;
 
-			if (obj{Table_Name}s.Collection.Length == 0)
+			if (obj{Table_Name_Plural}.Collection.Length == 0)
 				return 0;
 
 			SqlTransaction dbTransaction = objDBConnection.BeginTransaction();
@@ -98,7 +98,7 @@ namespace XHS.DataAccess
 				dbCommand.CommandText = "xhs_sp_upd_{table_name_lower}";
 				dbCommand.Transaction = dbTransaction;
 
-				for (int i = 0; i < obj{Table_Name}s.Collection.Length; i++)
+				for (int i = 0; i < obj{Table_Name_Plural}.Collection.Length; i++)
 				{
           dbCommand.Parameters.Clear();
                     
@@ -120,11 +120,11 @@ namespace XHS.DataAccess
 
 		}
         
-		public int Delete({Table_Name}s obj{Table_Name}s)
+		public int Delete({Table_Name_Plural} obj{Table_Name_Plural})
 		{
 			int intRowsAffected = 0;
 
-			if (obj{Table_Name}s.Collection.Length == 0)
+			if (obj{Table_Name_Plural}.Collection.Length == 0)
 				return 0;
 
 			SqlTransaction dbTransaction = objDBConnection.BeginTransaction();
@@ -139,11 +139,11 @@ namespace XHS.DataAccess
 				dbCommand.CommandText = "xhs_sp_del_{table_name_lower}";
 				dbCommand.Transaction = dbTransaction;
 
-				for (int i = 0; i < obj{Table_Name}s.Collection.Length; i++)
+				for (int i = 0; i < obj{Table_Name_Plural}.Collection.Length; i++)
 				{
 					dbCommand.Parameters.Clear();
 					
-					CreateParameter(dbCommand, "@ID", SqlDbType.Int, obj{Table_Name}s.Collection[i].ID);
+					CreateParameter(dbCommand, "@ID", SqlDbType.Int, obj{Table_Name_Plural}.Collection[i].ID);
 
 					intRowsAffected += dbCommand.ExecuteNonQuery();
 				}
@@ -213,7 +213,7 @@ namespace XHS.DataAccess
 			}
 		}
 			
-		public int FindAll(ref {Table_Name}s obj{Table_Name}s)
+		public int FindAll(ref {Table_Name_Plural} obj{Table_Name_Plural})
 		{
 			int intRowsReturned = 0;
 
@@ -230,7 +230,7 @@ namespace XHS.DataAccess
 
 				if (!objDataReader.HasRows)
 				{
-					obj{Table_Name}s.Collection = new {Table_Name}[0];
+					obj{Table_Name_Plural}.Collection = new {Table_Name}[0];
 					objDataReader.Close();
 					return 0;
 				}
@@ -250,10 +250,10 @@ namespace XHS.DataAccess
 
 				objDataReader.Close();
                 
-        obj{Table_Name}s.Collection = new {Table_Name}[al{Table_Name}.Count];
+        obj{Table_Name_Plural}.Collection = new {Table_Name}[al{Table_Name}.Count];
 
 				for (int i = 0; i < al{Table_Name}.Count; i++)
-					obj{Table_Name}s.Collection[i] = ({Table_Name})al{Table_Name}[i];
+					obj{Table_Name_Plural}.Collection[i] = ({Table_Name})al{Table_Name}[i];
 
 				return intRowsReturned;
 			}
