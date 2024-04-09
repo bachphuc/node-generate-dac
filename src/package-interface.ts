@@ -1,0 +1,1 @@
+export type CommandAction = 'table' | 'backend' | 'store';
