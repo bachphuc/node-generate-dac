@@ -314,7 +314,8 @@ export function dac_generate_dataServiceObject(tableName: string, schemas: Colum
   const classTemplate = text_from_file(`${TEMPLATE_DIR}/templates/DataServiceObjects_Class_Template.cs`);
 
   const strProperties = schemas.map((e, i) => {
-    return `public ${get_SqlDbType(e.type).codeType} ${e.col_name.replace(/[ _]+/g, '')} { get; set; }`;
+    // Use enum if enum is defined
+    return `public ${e.enum || get_SqlDbType(e.type).codeType} ${e.col_name.replace(/[ _]+/g, '')} { get; set; }`;
   }).join('\n' + repeat("\t", 2));
 
   let created_by_user = '';
@@ -709,10 +710,9 @@ export function DAC_Generate_From_XLSX(filePath: string, sheetIndex: number = 0)
       content: schemas.join("\n\n\n")
     });
 
-    const content = `
-${dropConstrains.join("\n")}
+    const content = `${dropConstrains.filter(e => e).join("\nGO\n")}
     
-${dropTables.join("\n")}`;
+${dropTables.join("\nGO\n")}`;
 
     files.push({
       name: 'table_schema_reset.sql',

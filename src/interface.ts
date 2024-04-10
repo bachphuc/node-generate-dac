@@ -7,5 +7,6 @@ export interface ColumnSchema {
   allow_null: 'yes' | 'no',
   foreign_table?: string,
   foreign_column?: string,
-  primary_key?: 'yes' | 'no'
+  primary_key?: 'yes' | 'no',
+  enum?: string,
 }
