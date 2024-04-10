@@ -375,7 +375,7 @@ export function dac_generate_conversions(tableName: string, schemas: ColumnSchem
   const methodTemplate = text_from_file(`${TEMPLATE_DIR}/templates/MakeDSO_Template_Method.cs`);
 
   const dsoFields = schemas.map((e, i) => {
-    return `ds${className}.${e.colName} = db${className}.${e.col_name};`;
+    return `ds${className}.${e.colName} =${e.enum ? `(${e.enum})` : ''} db${className}.${e.col_name};`;
   }).join('\n' + repeat("\t", 3));
 
   const dbFields = schemas.map((e, i) => {
@@ -388,7 +388,7 @@ export function dac_generate_conversions(tableName: string, schemas: ColumnSchem
       return `db${className}.${e.col_name} = DateTimeHelper.MakeDBDefaultValue(ds${className}.${e.colName});`;
     }
 
-    return `db${className}.${e.col_name} = ds${className}.${e.colName};`;
+    return `db${className}.${e.col_name} = ds${className}.${e.colName}${e.enum ? `.GetHashCode()` : ''};`;
   }).join('\n' + repeat("\t", 3));
 
   let created_by_user = '';
