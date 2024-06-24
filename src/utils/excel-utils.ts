@@ -113,10 +113,17 @@ export function json_read_all_sheets_from_excel(path: string, options?: Json_rea
           tmps.push(tmp);
         });
   
+        if(options && options.disableClean){
+          return {
+            name: sheetName,
+            data: tmps
+          };
+        }
+
         return {
           name: sheetName,
-          data: tmps
-        };
+          data: array_clean_data(tmps)
+        }
       }
     }
   

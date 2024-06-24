@@ -1,5 +1,5 @@
 import dayjs from "dayjs";
-import { SheetData, json_read_all_sheets_from_excel} from "./utils/excel-utils";
+import { SheetData, json_read_all_sheets_from_excel, json_to_file} from "./utils/excel-utils";
 import { str_className, str_plural } from "./utils/str-utils";
 import { ColumnSchema } from "./interface";
 import { __parent_dir, dir_create, file_exists, get_filename_without_extension, str_to_file, text_from_file } from "./utils/file_utils";
@@ -27,7 +27,7 @@ export function binding_template(content: string, data: any){
   return result;
 }
 
-export type SqlDbTypeType = '' | 'Int' | 'TinyInt' | 'NVarChar' | 'DateTime' | 'Bit' | 'Money';
+export type SqlDbTypeType = '' | 'Int' | 'TinyInt' | 'NVarChar' | 'DateTime' | 'Bit' | 'Money' | 'Decimal' | 'Date';
 export type CSharpType = 'int' | 'string' | 'DateTime' | 'bool' | 'decimal';
 export type CShareGetMethodType = '' | 'GetDateTime' | 'GetInt32' | 'GetBoolean' | 'GetString' | 'GetByte' | 'GetDecimal';
 
@@ -49,6 +49,15 @@ export function get_SqlDbType(type: string): SqlDbType{
       codeType: 'int',
       codeGetMethodType: 'GetInt32',
       sqlType: 'int'
+    };
+  }
+
+  if(type === 'date'){
+    return {
+      type: 'Date',
+      codeType: 'DateTime',
+      codeGetMethodType: 'GetDateTime',
+      sqlType: 'date'
     };
   }
 
@@ -79,6 +88,19 @@ export function get_SqlDbType(type: string): SqlDbType{
       codeType: 'string',
       codeGetMethodType: 'GetString',
       sqlType: `nvarchar(${length})`
+    };
+  }
+
+  const decimalReg = /Decimal\(([^\(\)]+)\)/i;
+  if(decimalReg.test(type)){
+    const match = decimalReg.exec(type);
+    const length = match ? match[1] : 250;
+    return {
+      type: 'Decimal',
+      option: length,
+      codeType: 'decimal',
+      codeGetMethodType: 'GetDecimal',
+      sqlType: `decimal(${length})`
     };
   }
 
@@ -599,6 +621,8 @@ export function DAC_Generate_From_XLSX(filePath: string, sheetIndex: number = 0)
   console.log(`DAC_Generate_From_XLSX: ${outputFolder}`.yellow);
 
   const sheets: SheetData[] = json_read_all_sheets_from_excel(filePath, { sheetIndex: sheetIndex, transformColumnName: true });
+
+  json_to_file(filePath.replace('xlsx', 'json'), sheets);
 
   const schemas: string[] = [];
   const stores: string[] = [];
