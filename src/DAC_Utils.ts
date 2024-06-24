@@ -622,7 +622,7 @@ export function DAC_Generate_From_XLSX(filePath: string, sheetIndex: number = 0)
 
   const sheets: SheetData[] = json_read_all_sheets_from_excel(filePath, { sheetIndex: sheetIndex, transformColumnName: true });
 
-  json_to_file(filePath.replace('xlsx', 'json'), sheets);
+  // json_to_file(filePath.replace('xlsx', 'json'), sheets);
 
   const schemas: string[] = [];
   const stores: string[] = [];
