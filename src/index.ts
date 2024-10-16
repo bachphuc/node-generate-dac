@@ -14,5 +14,3 @@ colors.enable();
 const INPUT_DIR = './input/';
 
 start_generate_dac_for_new_table(INPUT_DIR);
-
-// startProcess({inputFolder: INPUT_DIR});

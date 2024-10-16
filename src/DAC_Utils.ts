@@ -27,7 +27,7 @@ export function binding_template(content: string, data: any){
   return result;
 }
 
-export type SqlDbTypeType = '' | 'Int' | 'TinyInt' | 'NVarChar' | 'DateTime' | 'Bit' | 'Money' | 'Decimal' | 'Date';
+export type SqlDbTypeType = '' | 'Int' | 'TinyInt' | 'NVarChar' | 'DateTime' | 'Bit' | 'Money' | 'Decimal' | 'Date' | 'NText';
 export type CSharpType = 'int' | 'string' | 'DateTime' | 'bool' | 'decimal';
 export type CShareGetMethodType = '' | 'GetDateTime' | 'GetInt32' | 'GetBoolean' | 'GetString' | 'GetByte' | 'GetDecimal';
 
@@ -76,6 +76,14 @@ export function get_SqlDbType(type: string): SqlDbType{
       codeGetMethodType: 'GetByte',
       sqlType: 'tinyint',
       codeType: 'int'
+    };
+  }
+  if(type === 'ntext'){
+    return {
+      type: 'NText',
+      codeGetMethodType: 'GetString',
+      sqlType: 'ntext',
+      codeType: 'string'
     };
   }
   const nvarcharReg = /NVARCHAR\(([^\(\)]+)\)/i;
