@@ -9,7 +9,7 @@ import { SQLTable } from './tables/sql-interface';
 
 colors.enable();
 
-const SOURCE_FILE_NAME = 'BCSDev_Schema.sql';
+const SOURCE_FILE_NAME = 'source_schema.sql';
 const SOURCE_FILE_PATH = `./input/${SOURCE_FILE_NAME}`;
 
 const sourceSchemaData = text_from_file(SOURCE_FILE_PATH);
@@ -17,7 +17,7 @@ const sourceTables = schema_to_table_models(sourceSchemaData);
 console.log(`sourceTables=${sourceTables.length}`.green);
 json_to_file(`./output/source-schema.json`, sourceTables);
 
-const TARGET_FILE_NAME = 'LCRESQA_Schema_11_09_24.sql';
+const TARGET_FILE_NAME = 'target_schema.sql';
 const TARGET_FILE_PATH = `./input/${TARGET_FILE_NAME}`;
 
 const targetSchemaData = text_from_file(TARGET_FILE_PATH);
