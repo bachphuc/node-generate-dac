@@ -61,26 +61,6 @@ BEGIN
 END
 GO
 
-/****** Object:  StoredProcedure [dbo].[xhs_sp_del_{table_name_lower}]    Script Date: {datetime} ******/
-IF EXISTS (select * from dbo.sysobjects where id = object_id(N'[dbo].[xhs_sp_del_{table_name_lower}]') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
-  DROP PROCEDURE [dbo].[xhs_sp_del_{table_name_lower}]
-GO
-
-SET ANSI_NULLS ON
-GO
-SET QUOTED_IDENTIFIER ON
-GO
-CREATE PROCEDURE [dbo].[xhs_sp_del_{table_name_lower}]
-
-	@ID int
-
-AS
-
-	DELETE [dbo].[{table_name}]
-	WHERE
-		[ID] = @ID
-GO
-
 /****** Object:  StoredProcedure [dbo].[xhs_sp_get_{table_name_lower}_all]    Script Date: {datetime} ******/
 IF EXISTS (select * from dbo.sysobjects where id = object_id(N'[dbo].[xhs_sp_get_{table_name_lower}_all]') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
 DROP PROCEDURE [dbo].[xhs_sp_get_{table_name_lower}_all]
@@ -128,5 +108,24 @@ AS
 		t1.[ID] = @ID
 GO
 
+/****** Object:  StoredProcedure [dbo].[xhs_sp_soft_del_{table_name_lower}]    Script Date: {datetime} ******/
+IF EXISTS (select * from dbo.sysobjects where id = object_id(N'[dbo].[xhs_sp_soft_del_{table_name_lower}]') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+  DROP PROCEDURE [dbo].[xhs_sp_soft_del_{table_name_lower}]
+GO
 
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE PROCEDURE [dbo].[xhs_sp_soft_del_{table_name_lower}]
 
+	@ID int,
+	@UserAccountID int
+
+AS
+
+	UPDATE [dbo].[{table_name}]
+	SET Record_Status = 2, Update_DateTime = GETUTCDATE(), Update_User_Account_ID = @UserAccountID
+	WHERE
+		[ID] = @ID
+GO

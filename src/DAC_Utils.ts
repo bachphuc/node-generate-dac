@@ -27,9 +27,9 @@ export function binding_template(content: string, data: any){
   return result;
 }
 
-export type SqlDbTypeType = '' | 'Int' | 'TinyInt' | 'NVarChar' | 'DateTime' | 'Bit' | 'Money' | 'Decimal' | 'Date' | 'NText';
-export type CSharpType = 'int' | 'string' | 'DateTime' | 'bool' | 'decimal';
-export type CShareGetMethodType = '' | 'GetDateTime' | 'GetInt32' | 'GetBoolean' | 'GetString' | 'GetByte' | 'GetDecimal';
+export type SqlDbTypeType = '' | 'Int' | 'TinyInt' | 'NVarChar' | 'DateTime' | 'Bit' | 'Money' | 'Decimal' | 'Date' | 'NText' | 'VarChar' | 'BigInt' | 'SmallInt';
+export type CSharpType = 'int' | 'string' | 'DateTime' | 'bool' | 'decimal' | 'long';
+export type CShareGetMethodType = '' | 'GetDateTime' | 'GetInt32' | 'GetBoolean' | 'GetString' | 'GetByte' | 'GetDecimal' | 'GetInt64' | 'GetInt16';
 
 
 export interface SqlDbType{
@@ -49,6 +49,24 @@ export function get_SqlDbType(type: string): SqlDbType{
       codeType: 'int',
       codeGetMethodType: 'GetInt32',
       sqlType: 'int'
+    };
+  }
+
+  if(type === 'bigint'){
+    return {
+      type: 'BigInt',
+      codeType: 'long',
+      codeGetMethodType: 'GetInt64',
+      sqlType: 'bigint'
+    };
+  }
+
+  if(type === 'smallint'){
+    return {
+      type: 'SmallInt',
+      codeType: 'int',
+      codeGetMethodType: 'GetInt16',
+      sqlType: 'smallint'
     };
   }
 
@@ -96,6 +114,19 @@ export function get_SqlDbType(type: string): SqlDbType{
       codeType: 'string',
       codeGetMethodType: 'GetString',
       sqlType: `nvarchar(${length})`
+    };
+  }
+
+  const varcharReg = /VARCHAR\(([^\(\)]+)\)/i;
+  if(varcharReg.test(type)){
+    const match = varcharReg.exec(type);
+    const length = match ? match[1] : 250;
+    return {
+      type: 'VarChar',
+      option: length,
+      codeType: 'string',
+      codeGetMethodType: 'GetString',
+      sqlType: `varchar(${length})`
     };
   }
 

@@ -119,46 +119,6 @@ namespace XHS.DataAccess
 			}
 
 		}
-        
-		public int Delete({Table_Name_Plural} obj{Table_Name_Plural})
-		{
-			int intRowsAffected = 0;
-
-			if (obj{Table_Name_Plural}.Collection.Length == 0)
-				return 0;
-
-			SqlTransaction dbTransaction = objDBConnection.BeginTransaction();
-
-			try
-			{
-				SqlCommand dbCommand = new SqlCommand();
-
-				dbCommand.Connection = objDBConnection;
-				dbCommand.CommandTimeout = 30;
-				dbCommand.CommandType = CommandType.StoredProcedure;
-				dbCommand.CommandText = "xhs_sp_del_{table_name_lower}";
-				dbCommand.Transaction = dbTransaction;
-
-				for (int i = 0; i < obj{Table_Name_Plural}.Collection.Length; i++)
-				{
-					dbCommand.Parameters.Clear();
-					
-					CreateParameter(dbCommand, "@ID", SqlDbType.Int, obj{Table_Name_Plural}.Collection[i].ID);
-
-					intRowsAffected += dbCommand.ExecuteNonQuery();
-				}
-
-				dbTransaction.Commit();
-				dbCommand.Dispose();
-				return intRowsAffected;
-			}
-
-			catch (Exception e)
-			{
-				dbTransaction.Rollback();
-				throw new ApplicationException("Error occurred during attempt to delete record into XHS {Table_Name} table and has been rolled-back.", e);
-			}
-		}
 			
 		protected void Fill(SqlDataReader objDataReader, ref {Table_Name} obj{Table_Name})
 		{
@@ -267,6 +227,47 @@ namespace XHS.DataAccess
 				throw new ApplicationException("Error occurred during attempt to read record from XHS {Table_Name} table.", e);
 			}
 
-		} 
+		}
+
+		public int SoftDelete({Table_Name_Plural} obj{Table_Name_Plural}, int userAccountID)
+		{
+			int intRowsAffected = 0;
+
+			if (obj{Table_Name_Plural}.Collection.Length == 0)
+				return 0;
+
+			SqlTransaction dbTransaction = objDBConnection.BeginTransaction();
+
+			try
+			{
+				SqlCommand dbCommand = new SqlCommand();
+
+				dbCommand.Connection = objDBConnection;
+				dbCommand.CommandTimeout = 30;
+				dbCommand.CommandType = CommandType.StoredProcedure;
+				dbCommand.CommandText = "xhs_sp_soft_del_{table_name_lower}";
+				dbCommand.Transaction = dbTransaction;
+
+				for (int i = 0; i < obj{Table_Name_Plural}.Collection.Length; i++)
+				{
+					dbCommand.Parameters.Clear();
+					
+					CreateParameter(dbCommand, "@ID", SqlDbType.Int, obj{Table_Name_Plural}.Collection[i].ID);
+					CreateParameter(dbCommand, "@UserAccountID", SqlDbType.Int, userAccountID);
+
+					intRowsAffected += dbCommand.ExecuteNonQuery();
+				}
+
+				dbTransaction.Commit();
+				dbCommand.Dispose();
+				return intRowsAffected;
+			}
+
+			catch (Exception e)
+			{
+				dbTransaction.Rollback();
+				throw new ApplicationException("Error occurred during attempt to soft delete record into XHS {Table_Name} table and has been rolled-back.", e);
+			}
+		}
   }
 }
