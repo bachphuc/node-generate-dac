@@ -4,7 +4,7 @@ import fs from 'fs';
 import { text_from_file } from "./utils/file_utils";
 import { schema_to_table_models, table_compares } from './tables/table-utils';
 import { json_to_file } from './utils/excel-utils';
-import { createCanvas } from 'canvas';
+// import { createCanvas } from 'canvas';
 import { SQLTable } from './tables/sql-interface';
 
 colors.enable();
