@@ -577,11 +577,16 @@ GO`;
 
   const dropContent = dropConstraints.length ? dropConstraints.join("\n\t") : '';
 
+  let strColumnDescription = schemas.filter(e => e.description && e.description.trim()).map((e, i) => {
+    return `EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'${e.description}' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'${tableName}', @level2type=N'COLUMN',@level2name=N'${e.col_name}'` + "\nGO";
+  }).join("\n");
+
   const content = binding_template(template, {
     Table_Name: tableName,
     columns: strColumns,
     foreign_keys: strForeignKeys,
-    drop_constraint: dropContent
+    drop_constraint: dropContent,
+    column_descrptions: strColumnDescription
   });
   str_to_file(get_output_filepath(tableName, `${tableName}_table_schema.sql`), content);
 

@@ -9,4 +9,5 @@ export interface ColumnSchema {
   foreign_column?: string,
   primary_key?: 'yes' | 'no',
   enum?: string,
+  description?: string,
 }

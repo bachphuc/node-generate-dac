@@ -24,4 +24,6 @@ GO
 
 {foreign_keys}
 
+{column_descrptions}
+
 -- END {Table_Name}
