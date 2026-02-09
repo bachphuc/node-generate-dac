@@ -1,11 +1,5 @@
 -- BEGIN {Table_Name}
 
-IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].{Table_Name}') AND type in (N'U'))
-BEGIN
-	DROP TABLE [dbo].{Table_Name}
-END
-GO
-
 SET ANSI_NULLS ON
 GO
 
